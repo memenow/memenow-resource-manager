@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"log"
-	"memenow.ai/memenow-resource-manager/operator"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"memenow.ai/memenow-resource-manager/operator"
 )
 
 func main() {
