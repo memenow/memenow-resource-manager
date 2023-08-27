@@ -2,7 +2,7 @@ FROM debian:bookworm-slim
 
 WORKDIR /app
 
-COPY $PWD/build/memenow-resource-manager /app/memenow-resource-manager
+COPY memenow-resource-manager /app/memenow-resource-manager
 
 RUN chmod +x memenow-resource-manager
 

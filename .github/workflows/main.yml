@@ -51,6 +51,9 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
+      - name: List contents of build directory
+        run: ls -al ./build
+  
       - name: Build and push Docker image
         id: docker-build-push
         uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a # Build and push Docker image
