@@ -1,0 +1,70 @@
+name: Container Build and Push
+
+on:
+  push:
+    branches: [ "main" ] # Execute workflow on main branch pushes
+  pull_request:
+    branches: [ "main" ] # Execute workflow on pull requests to main branch
+  release:
+    types:
+      - created # Execute workflow when a new release is created
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v3   # Step to check out code using actions/checkout
+
+      - name: Build binary
+        run: make build  # Run make build command to build binary
+
+      #Conditions for not running on PR
+      - name: Install cosign
+        if: github.event_name != 'pull_request'
+        uses: sigstore/cosign-installer@6e04d228eb30da1757ee4e1dd75a0ec73a653e06 #v3.1.1
+        with:
+          cosign-release: 'v2.1.1'
+
+      - name: Setup Docker buildx
+        uses: docker/setup-buildx-action@79abd3f86f79a9d68a23c75a09a9a85889262adf # Setup Docker buildx to use
+
+      - name: Log into registry ${{ env.REGISTRY }}
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c # Docker registry login step
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38 # Extract Docker metadata
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: Build and push Docker image
+        id: docker-build-push
+        uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a # Build and push Docker image
+        with:
+          context: ./build
+          push: ${{ github.event_name != 'pull_request' }}  # Push image only when event is not a PR
+          tags: ${{ steps.meta.outputs.tags }}  # Use tags extracted from Docker metadata
+          labels: ${{ steps.meta.outputs.labels }}  # Use labels extracted from Docker metadata
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Sign the published Docker image
+        if: ${{ github.event_name != 'pull_request' }}
+        env:
+          TAGS: ${{ steps.meta.outputs.tags }}
+          DIGEST: ${{ steps.docker-build-push.outputs.digest }}
+        run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}  # Use identity token to create ephemeral certificate
