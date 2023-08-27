@@ -8,5 +8,8 @@ GO_BUILD_CMD := /usr/local/go/bin/go build -o ./build/${DOCKER_IMAGE_NAME}  ./cm
 build:
 	${GO_BUILD_CMD}
 
-docker: build
+container: build
 	docker build -t ${DOCKER_IMAGE_NAME}:${VERSION} ${BUILD_DIR}
+
+container push: container
+	docker push ${DOCKER_IMAGE_NAME}:${VERSION}

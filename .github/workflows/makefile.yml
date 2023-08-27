@@ -14,3 +14,9 @@ jobs:
 
     - name: build binary
       run: make build
+
+    - name: build container image
+      run: make docker
+
+    - name: push container image
+      run: make container push
