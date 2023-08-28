@@ -7,7 +7,7 @@ WORKDIR /app
 COPY memenow-resource-manager /app/memenow-resource-manager
 
 RUN apt-get update && apt-get upgrade -y && apt install -y git wget curl htop net-tools\
-    git clone https://github.com/memenow/stable-diffusion-webui-on-k8s.git . \
+    git clone https://github.com/memenow/stable-diffusion-webui-on-k8s.git /app/ \
     chmod +x memenow-resource-manager
 
 EXPOSE 8080
