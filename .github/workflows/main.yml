@@ -1,8 +1,6 @@
 name: Container Build and Push
 
 on:
-  push:
-    branches: [ "main" ] # Execute workflow on main branch pushes
   pull_request:
     branches: [ "main" ] # Execute workflow on pull requests to main branch
   release:
