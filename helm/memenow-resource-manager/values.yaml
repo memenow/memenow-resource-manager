@@ -1,0 +1,15 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/memenow/memenow-resource-manager
+  pullPolicy: IfNotPresent
+  tag: "sha256-eb6536279fe77471237ef8aa571d89826d818ba2063d7f0cb050b95d5748d89f.sig"
+
+imagePullSecrets: []
+
+service:
+  type: ClusterIP
+  port: 80
+
+
+resources: {}
