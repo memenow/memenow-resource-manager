@@ -3,14 +3,16 @@ package operator
 import (
 	"errors"
 	"fmt"
+	"log"
+	"os"
+
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/chart/loader"
 	"helm.sh/helm/v3/pkg/cli"
-	"log"
-	"os"
 )
 
+// InstallHelm installs the charts in the given namespaces with the provided release names
 func InstallHelm(charts []string, namespaces []string, release []string) error {
 	settings := cli.New()
 	actionConfig := initConfig(settings)
@@ -27,6 +29,8 @@ func InstallHelm(charts []string, namespaces []string, release []string) error {
 	return nil
 }
 
+// initConfig initializes the Helm configuration and returns an action.Configuration.
+// Returns nil if there's an error during initialization.
 func initConfig(settings *cli.EnvSettings) *action.Configuration {
 	actionConfig := new(action.Configuration)
 	if err := actionConfig.Init(settings.RESTClientGetter(), settings.Namespace(),
@@ -37,6 +41,7 @@ func initConfig(settings *cli.EnvSettings) *action.Configuration {
 	return actionConfig
 }
 
+// installAndVerifyRelease installs the chart located at the given chart path and verifies that the release was deployed successfully.
 func installAndVerifyRelease(i int, chart string, namespaces []string, release []string, actionConfig *action.Configuration) error {
 	installChart, err := loader.Load(chart)
 	if err != nil {
@@ -51,6 +56,7 @@ func installAndVerifyRelease(i int, chart string, namespaces []string, release [
 	return verifyRelease(chart, actionConfig)
 }
 
+// runInstallAction installs the chart using the Helm install action.
 func runInstallAction(i int, chart string, namespaces []string, release []string, installChart *chart.Chart, actionConfig *action.Configuration) error {
 	install := action.NewInstall(actionConfig)
 	install.ReleaseName = release[i]
@@ -68,6 +74,7 @@ func runInstallAction(i int, chart string, namespaces []string, release []string
 	return nil
 }
 
+// verifyReleaseByChartName verifies if a release was deployed successfully based on the chart name.
 func verifyRelease(chart string, actionConfig *action.Configuration) error {
 	list := action.NewList(actionConfig)
 	releases, listErr := list.Run()
