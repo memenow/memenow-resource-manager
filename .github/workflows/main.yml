@@ -1,8 +1,6 @@
 name: Container Build and Push
 
 on:
-  pull_request:
-    branches: [ "main" ] # Execute workflow on pull requests to main branch
   release:
     types:
       - created # Execute workflow when a new release is created
@@ -13,7 +11,7 @@ env:
 
 jobs:
   build:
-    runs-on: do-runner
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
