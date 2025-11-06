@@ -1,6 +1,6 @@
 module memenow.ai/memenow-resource-manager
 
-go 1.24
+go 1.23
 
 require (
 	github.com/gin-gonic/gin v1.9.1
