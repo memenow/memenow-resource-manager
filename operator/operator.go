@@ -137,16 +137,16 @@ func runInstallAction(ctx context.Context, req HelmInstallRequest, installChart 
 // verifyRelease verifies if a release was deployed successfully
 func verifyRelease(releaseName, namespace string, actionConfig *action.Configuration) error {
 	list := action.NewList(actionConfig)
-	list.All = true
-	if namespace != "" {
-		list.SetStateMask()
-	}
+	list.All = true        // Include all release statuses
+	list.AllNamespaces = true  // Search across all namespaces to find the release
+	list.Filter = releaseName  // Filter by release name for efficiency
 
 	releases, err := list.Run()
 	if err != nil {
 		return fmt.Errorf("error listing releases: %w", err)
 	}
 
+	// Find the release by both name and namespace
 	for _, release := range releases {
 		if release.Name == releaseName && release.Namespace == namespace {
 			log.Printf("Release %s in namespace %s deployed successfully with status: %s",
