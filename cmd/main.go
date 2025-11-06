@@ -15,6 +15,13 @@ import (
 	"memenow.ai/memenow-resource-manager/operator"
 )
 
+// Version information - set via ldflags at build time
+var (
+	Version   = "dev"
+	BuildTime = "unknown"
+	GitCommit = "unknown"
+)
+
 const (
 	// Default server configuration
 	defaultPort            = "8080"
@@ -25,7 +32,7 @@ const (
 func main() {
 	// Set up logging
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
-	log.Println("Starting memenow-resource-manager...")
+	log.Printf("Starting memenow-resource-manager version=%s commit=%s buildTime=%s", Version, GitCommit, BuildTime)
 
 	// Get port from environment or use default
 	port := os.Getenv("PORT")
@@ -82,6 +89,7 @@ func setupRouter() *gin.Engine {
 	// Health check endpoint
 	router.GET("/ok", healthCheckHandler)
 	router.GET("/health", healthCheckHandler)
+	router.GET("/version", versionHandler)
 
 	// API routes
 	v1 := router.Group("/v1")
@@ -96,6 +104,14 @@ func healthCheckHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":  "healthy",
 		"message": "Service is running",
+	})
+}
+
+func versionHandler(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"version":   Version,
+		"gitCommit": GitCommit,
+		"buildTime": BuildTime,
 	})
 }
 

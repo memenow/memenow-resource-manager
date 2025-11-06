@@ -75,6 +75,23 @@ Response:
 }
 ```
 
+### Version Information
+
+Get build version and metadata:
+
+```bash
+GET /version
+```
+
+Response:
+```json
+{
+  "version": "8aa2e00-dirty",
+  "gitCommit": "8aa2e00",
+  "buildTime": "2025-11-06_17:41:37"
+}
+```
+
 ### Create Helm Release
 
 Install a Helm chart to a Kubernetes namespace:
