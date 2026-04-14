@@ -22,15 +22,9 @@ type HelmInstallRequest struct {
 	Values    map[string]interface{}
 }
 
-// InstallHelm installs the charts in the given namespaces with the provided release names
-// Deprecated: Use InstallHelmWithContext for better context support
-func InstallHelm(charts []string, namespaces []string, release []string) error {
-	return InstallHelmWithContext(context.Background(), charts, namespaces, release, nil)
-}
-
-// InstallHelmWithContext installs Helm charts with context support for cancellation and timeout
+// InstallHelmWithContext installs Helm charts with context support for cancellation and timeout.
+// Each chart gets its own copy of the provided values.
 func InstallHelmWithContext(ctx context.Context, charts []string, namespaces []string, releases []string, values map[string]interface{}) error {
-	// Validate input arrays have the same length
 	if len(charts) != len(namespaces) || len(charts) != len(releases) {
 		return errors.New("charts, namespaces, and releases arrays must have the same length")
 	}
@@ -39,18 +33,29 @@ func InstallHelmWithContext(ctx context.Context, charts []string, namespaces []s
 		return errors.New("no charts provided for installation")
 	}
 
-	// Convert to structured requests
 	requests := make([]HelmInstallRequest, len(charts))
 	for i := range charts {
 		requests[i] = HelmInstallRequest{
 			ChartPath: charts[i],
 			Namespace: namespaces[i],
 			Release:   releases[i],
-			Values:    values,
+			Values:    copyValues(values),
 		}
 	}
 
 	return InstallHelmRequests(ctx, requests)
+}
+
+// copyValues returns a shallow copy of the values map so each request is independent.
+func copyValues(src map[string]interface{}) map[string]interface{} {
+	if src == nil {
+		return nil
+	}
+	dst := make(map[string]interface{}, len(src))
+	for k, v := range src {
+		dst[k] = v
+	}
+	return dst
 }
 
 // InstallHelmRequests installs multiple Helm charts from structured requests

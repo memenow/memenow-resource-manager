@@ -18,7 +18,7 @@ This service provides RESTful API endpoints to manage Helm chart deployments on 
 
 ## Requirements
 
-- Go 1.24 or later
+- Go 1.26 or later
 - Kubernetes cluster access
 - Helm v3
 
@@ -217,47 +217,3 @@ make install-tools
 └── README.md           # This file
 ```
 
-## Recent Improvements
-
-### Version Upgrade
-- Upgraded from Go 1.21 to Go 1.24
-- Updated to latest stable dependencies
-
-### Code Quality Improvements
-1. **operator/operator.go**
-   - Refactored to use structured types instead of parallel arrays
-   - Added context support for cancellation and timeouts
-   - Improved error handling with error wrapping
-   - Removed hardcoded values (parameterized image tags)
-   - Replaced `fmt.Println` with proper logging
-   - Fixed release verification logic
-   - Added input validation
-
-2. **cmd/main.go**
-   - Implemented graceful shutdown handling
-   - Added comprehensive input validation
-   - Added request timeout support
-   - Improved error messages and logging
-   - Added health check endpoints
-   - Proper context cancellation handling
-
-3. **Makefile**
-   - Added `CGO_ENABLED=0` for static binaries
-   - Added version information via ldflags
-   - Added test, lint, fmt, vet targets
-   - Improved build configuration
-   - Added help documentation
-
-4. **Code Quality**
-   - Added golangci-lint configuration
-   - Improved code documentation
-   - Better error handling patterns
-   - Structured logging
-
-## License
-
-See the LICENSE file for details.
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
