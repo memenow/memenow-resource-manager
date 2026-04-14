@@ -46,7 +46,9 @@ func InstallHelmWithContext(ctx context.Context, charts []string, namespaces []s
 	return InstallHelmRequests(ctx, requests)
 }
 
-// copyValues returns a shallow copy of the values map so each request is independent.
+// copyValues returns a shallow copy of the top-level values map so each request
+// is independent. Nested maps are still shared; use a deep copy if callers
+// mutate nested structures across requests.
 func copyValues(src map[string]interface{}) map[string]interface{} {
 	if src == nil {
 		return nil
