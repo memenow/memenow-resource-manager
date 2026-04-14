@@ -23,6 +23,9 @@ var (
 	GitCommit = "unknown"
 )
 
+// installHelm is the function used to install Helm charts. Replaced in tests.
+var installHelm = operator.InstallHelmWithContext
+
 const (
 	// Default server configuration
 	defaultPort            = "8080"
@@ -154,7 +157,7 @@ func createHelmReleaseHandler(c *gin.Context) {
 		chartName, namespaceName, releaseName)
 
 	// Install Helm chart with context support
-	err := operator.InstallHelmWithContext(
+	err := installHelm(
 		ctx,
 		[]string{chartName},
 		[]string{namespaceName},
