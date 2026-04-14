@@ -14,6 +14,14 @@ import (
 	"helm.sh/helm/v3/pkg/cli"
 )
 
+// Testable seams: package-level function variables that tests can override.
+var (
+	loadChart     = loader.Load
+	newHelmConfig = initConfig
+	runInstall    = runInstallAction
+	verifyRel     = verifyRelease
+)
+
 // HelmInstallRequest represents a single Helm installation request
 type HelmInstallRequest struct {
 	ChartPath string
@@ -67,7 +75,7 @@ func InstallHelmRequests(ctx context.Context, requests []HelmInstallRequest) err
 	}
 
 	settings := cli.New()
-	actionConfig, err := initConfig(settings)
+	actionConfig, err := newHelmConfig(settings)
 	if err != nil {
 		return fmt.Errorf("error initializing Helm configuration: %w", err)
 	}
@@ -109,16 +117,16 @@ func initConfig(settings *cli.EnvSettings) (*action.Configuration, error) {
 
 // installAndVerifyRelease installs the chart and verifies deployment success
 func installAndVerifyRelease(ctx context.Context, req HelmInstallRequest, actionConfig *action.Configuration) error {
-	installChart, err := loader.Load(req.ChartPath)
+	installChart, err := loadChart(req.ChartPath)
 	if err != nil {
 		return fmt.Errorf("error loading chart from %s: %w", req.ChartPath, err)
 	}
 
-	if err := runInstallAction(ctx, req, installChart, actionConfig); err != nil {
+	if err := runInstall(ctx, req, installChart, actionConfig); err != nil {
 		return err
 	}
 
-	return verifyRelease(req.Release, req.Namespace, actionConfig)
+	return verifyRel(req.Release, req.Namespace, actionConfig)
 }
 
 // runInstallAction installs the chart using the Helm install action
