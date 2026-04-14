@@ -1,3 +1,4 @@
+// Package main is the entry point for the memenow-resource-manager service.
 package main
 
 import (
@@ -45,8 +46,9 @@ func main() {
 
 	// Create HTTP server
 	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%s", port),
-		Handler: router,
+		Addr:              fmt.Sprintf(":%s", port),
+		Handler:           router,
+		ReadHeaderTimeout: 10 * time.Second,
 	}
 
 	// Start server in a goroutine
@@ -161,7 +163,7 @@ func createHelmReleaseHandler(c *gin.Context) {
 	)
 
 	if err != nil {
-		// Check if context was cancelled or timed out
+		// Check if context was canceled or timed out
 		if errors.Is(err, context.DeadlineExceeded) {
 			log.Printf("Helm installation timed out: %v", err)
 			c.JSON(http.StatusRequestTimeout, gin.H{
@@ -172,9 +174,9 @@ func createHelmReleaseHandler(c *gin.Context) {
 		}
 
 		if errors.Is(err, context.Canceled) {
-			log.Printf("Helm installation cancelled: %v", err)
+			log.Printf("Helm installation canceled: %v", err)
 			c.JSON(http.StatusRequestTimeout, gin.H{
-				"error":   "Installation cancelled",
+				"error":   "Installation canceled",
 				"message": err.Error(),
 			})
 			return

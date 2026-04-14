@@ -34,3 +34,6 @@ coverage.html
 *.swp
 *.swo
 *~
+
+# Personal Claude Code config
+CLAUDE.local.md

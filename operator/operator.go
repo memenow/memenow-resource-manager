@@ -1,3 +1,4 @@
+// Package operator provides Helm chart installation and lifecycle management.
 package operator
 
 import (
@@ -68,7 +69,7 @@ func InstallHelmRequests(ctx context.Context, requests []HelmInstallRequest) err
 		// Check context cancellation
 		select {
 		case <-ctx.Done():
-			return fmt.Errorf("installation cancelled: %w", ctx.Err())
+			return fmt.Errorf("installation canceled: %w", ctx.Err())
 		default:
 		}
 
@@ -137,9 +138,9 @@ func runInstallAction(ctx context.Context, req HelmInstallRequest, installChart 
 // verifyRelease verifies if a release was deployed successfully
 func verifyRelease(releaseName, namespace string, actionConfig *action.Configuration) error {
 	list := action.NewList(actionConfig)
-	list.All = true        // Include all release statuses
-	list.AllNamespaces = true  // Search across all namespaces to find the release
-	list.Filter = releaseName  // Filter by release name for efficiency
+	list.All = true           // Include all release statuses
+	list.AllNamespaces = true // Search across all namespaces to find the release
+	list.Filter = releaseName // Filter by release name for efficiency
 
 	releases, err := list.Run()
 	if err != nil {
