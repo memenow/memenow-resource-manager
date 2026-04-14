@@ -57,7 +57,7 @@ build:
 clean:
 	@echo "Cleaning build artifacts..."
 	@rm -rf $(BUILD_DIR)
-	@$(GO) clean -cache -testcache
+	@rm -f coverage.out coverage.html
 	@echo "Clean complete"
 
 ## test: Run all tests

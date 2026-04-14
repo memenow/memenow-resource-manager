@@ -166,7 +166,7 @@ func createHelmReleaseHandler(c *gin.Context) {
 		// Check if context was canceled or timed out
 		if errors.Is(err, context.DeadlineExceeded) {
 			log.Printf("Helm installation timed out: %v", err)
-			c.JSON(http.StatusRequestTimeout, gin.H{
+			c.JSON(http.StatusGatewayTimeout, gin.H{
 				"error":   "Installation timed out",
 				"message": err.Error(),
 			})
@@ -175,7 +175,7 @@ func createHelmReleaseHandler(c *gin.Context) {
 
 		if errors.Is(err, context.Canceled) {
 			log.Printf("Helm installation canceled: %v", err)
-			c.JSON(http.StatusRequestTimeout, gin.H{
+			c.JSON(http.StatusServiceUnavailable, gin.H{
 				"error":   "Installation canceled",
 				"message": err.Error(),
 			})

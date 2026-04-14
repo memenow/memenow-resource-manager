@@ -22,6 +22,7 @@ go.work
 
 # Build directory and binaries
 build/
+!build/Dockerfile
 memenow-resource-manager
 
 # Coverage reports
