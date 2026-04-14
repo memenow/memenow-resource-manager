@@ -18,10 +18,15 @@ jobs:
       id-token: write
 
     steps:
-      - uses: actions/checkout@v3   # Step to check out code using actions/checkout
+      - uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26'
 
       - name: Build binary
-        run: make build  # Run make build command to build binary
+        run: make build
 
       #Conditions for not running on PR
       - name: Install cosign
