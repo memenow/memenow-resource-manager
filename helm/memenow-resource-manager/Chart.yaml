@@ -1,6 +1,6 @@
 apiVersion: v2
 name: memenow-resource-manager
-description: A Helm chart for Kubernetes
+description: Helm chart for the memenow-resource-manager service
 
 type: application
 
